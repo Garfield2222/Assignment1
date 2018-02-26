@@ -1,34 +1,25 @@
+<?php
 
+$servername = "localhost";
+$username = "root";
+$password = "root";
 
-    <?php
+try{
+    //PDO Database Connection object
+    $conn = new PDO("mysql:host=$servername; dbname=web", $username, $password); 
 
-/* Database credentials. Assuming you are running MySQL
+    //Setting an attribute to connection catch anny error messages
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-server with default setting (user 'root' with no password) */
+    echo "Connected Successfully";
+}
+catch(PDOException $e){
 
-define('DB_SERVER', 'localhost');
-
-define('DB_USERNAME', 'root');
-
-define('DB_PASSWORD', 'root');
-
-define('DB_NAME', 'web');
-
- 
-
-/* Attempt to connect to MySQL database */
-
-$link = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
-
- 
-
-// Check connection
-
-if($link === false){
-
-    die("ERROR: Could not connect. " . mysqli_connect_error());
-
+    //Display any error message if database connect fails
+    echo "Connection Failed..." . $e->getMessage();
 }
 
-?>
+//Close database connection
+$conn = null;
 
+?>
