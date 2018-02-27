@@ -30,15 +30,15 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
         // Prepare a select statement
 
-        $sql = "SELECT iduser FROM users WHERE username = ?";
+        $sql = "SELECT iduser FROM user WHERE username = :username";
 
         
 
-        if($stmt = mysqli_prepare($link, $sql)){
+        if($stmt = $pdo->prepare($sql)){
 
             // Bind variables to the prepared statement as parameters
 
-            mysqli_stmt_bind_param($stmt, "s", $param_username);
+            $stmt->bindParam(':username', $param_username, PDO::PARAM_STR);
 
             
 
@@ -50,15 +50,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
             // Attempt to execute the prepared statement
 
-            if(mysqli_stmt_execute($stmt)){
+            if($stmt->execute()){
 
-                /* store result */
-
-                mysqli_stmt_store_result($stmt);
-
-                
-
-                if(mysqli_stmt_num_rows($stmt) == 1){
+                if($stmt->rowCount() == 1){
 
                     $username_err = "This username is already taken.";
 
@@ -80,7 +74,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
         // Close statement
 
-        mysqli_stmt_close($stmt);
+        unset($stmt);
 
     }
 
@@ -132,15 +126,17 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
         // Prepare an insert statement
 
-        $sql = "INSERT INTO users (username, password) VALUES (?, ?)";
+        $sql = "INSERT INTO user (username, password) VALUES (:username, :password)";
 
          
 
-        if($stmt = mysqli_prepare($link, $sql)){
+        if($stmt = $pdo->prepare($sql)){
 
             // Bind variables to the prepared statement as parameters
 
-            mysqli_stmt_bind_param($stmt, "ss", $param_username, $param_password);
+            $stmt->bindParam(':username', $param_username, PDO::PARAM_STR);
+
+            $stmt->bindParam(':password', $param_password, PDO::PARAM_STR);
 
             
 
@@ -154,7 +150,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
             // Attempt to execute the prepared statement
 
-            if(mysqli_stmt_execute($stmt)){
+            if($stmt->execute()){
 
                 // Redirect to login page
 
@@ -172,7 +168,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
         // Close statement
 
-        mysqli_stmt_close($stmt);
+        unset($stmt);
 
     }
 
@@ -180,18 +176,19 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
     // Close connection
 
-    mysqli_close($link);
+    unset($pdo);
 
 }
 
 ?>
+
 <!DOCTYPE html>
 <html>
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>demo</title>
+    <title>Website</title>
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/fonts/ionicons.min.css">
     <link rel="stylesheet" href="assets/css/Contact-Form-Clean.css">
@@ -209,7 +206,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         </div>
     </div>
     <div class="login-dark" style="background-color:rgb(33,74,128);height:534px;">
-        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post" style="padding:24px;width:363px;">
+        <form id="register" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
             <h2 class="sr-only">Registation Form</h2>
             <div class="illustration"><i class="icon ion-ios-locked-outline"></i></div>
             <div class="form-group" <?php echo (!empty($username_err)) ? 'has-error' : ''; ?>">
@@ -230,7 +227,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             <div class="form-group">
                 <button class="btn btn-primary btn-block" type="Reset" value="Reset">Reset</button>
             </div>
-            <div><p>Already have an account? <a href="login.php">Login here.</a></p> </div>
+            <div>
+                <p class="forgot">Already have an account? <a href="login.php">Login here.</a></p> 
+            </div>
             </form>
     </div>
     <script src="assets/js/jquery.min.js"></script>

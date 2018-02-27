@@ -4,6 +4,7 @@
   text-align:center;
   /*color:rgb(30,40,51);*/
   background-color:rgb(33,74,128);
+  margin-bottom: 24px;
 }
 
 html {
@@ -27,5 +28,10 @@ html {
 .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:focus, .navbar-default .navbar-nav > .active > a:hover {
   color:rgb(125,215,221);
   border:1px;
+}
+
+.form1{
+		padding: 10px;
+		width: 375px;
 }
 
